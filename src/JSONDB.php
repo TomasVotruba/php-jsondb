@@ -191,12 +191,18 @@ class JSONDB
         return $c;
     }
 
+    /**
+     * @return self
+     */
     public function delete()
     {
         $this->delete = true;
         return $this;
     }
 
+    /**
+     * @return self
+     */
     public function update(array $columns)
     {
         $this->update = $columns;
@@ -358,7 +364,7 @@ class JSONDB
     /**
      * Prepares data and written to file
      *
-     * @return object $this
+     * @return self
      */
     public function trigger()
     {
@@ -390,7 +396,7 @@ class JSONDB
     /**
      * Flushes indexes they won't be reused on next action
      */
-    private function flush_indexes($flush_where = false)
+    private function flush_indexes(bool $flush_where = false): void
     {
         $this->last_indexes = [];
         if ($flush_where) {
