@@ -332,7 +332,7 @@ class JSONDB
         fwrite($this->fp, $data);
     }
 
-    private function _update()
+    private function _update(): void
     {
         if (! empty($this->last_indexes) && ! empty($this->where)) {
             foreach ($this->content as $i => $v) {
@@ -344,7 +344,7 @@ class JSONDB
                         throw new \Exception('Update method has an off key');
                     }
                 } else {
-                    continue;
+                    return;
                 }
             }
         } elseif (! empty($this->where) && empty($this->last_indexes)) {
