@@ -252,7 +252,7 @@ class JSONDB
         return $this->last_indexes;
     }
 
-    public function commit()
+    public function commit(): void
     {
         if ($this->fp && is_resource($this->fp)) {
             $f = $this->fp;
@@ -275,7 +275,7 @@ class JSONDB
         fclose($f);
     }
 
-    private function append()
+    private function append(): void
     {
         $size = $this->check_fp_size();
         $per_read = $size > 64 ? 64 : $size;
@@ -408,6 +408,9 @@ class JSONDB
         }
     }
 
+    /**
+     * @return bool|int
+     */
     private function intersect_value_check($a, $b)
     {
         if ($b instanceof \stdClass) {
