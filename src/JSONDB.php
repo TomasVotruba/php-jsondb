@@ -41,7 +41,7 @@ class JSONDB
     private $merge;
 
     /**
-     * @var mixed[]|null
+     * @var array<string, mixed>[]|null
      */
     private $update;
 
@@ -56,7 +56,7 @@ class JSONDB
     private $last_indexes = [];
 
     /**
-     * @var array{string, string}|string[]
+     * @var array{string, string|int}|string[]
      */
     private $order_by = [];
 
@@ -78,12 +78,15 @@ class JSONDB
 
     public const OR = 'OR';
 
-    public function __construct(string $dir, $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+    public function __construct(string $dir, int $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
     {
         $this->dir = $dir;
         $this->json_opts['encode'] = $json_encode_opt;
     }
 
+    /**
+     * @return false|int
+     */
     public function check_fp_size()
     {
         $size = 0;
@@ -99,14 +102,11 @@ class JSONDB
         return $size;
     }
 
-    private function check_file()
+    /**
+     * Checks and validates if JSON file exists
+     */
+    private function check_file(): bool
     {
-        /**
-         * Checks and validates if JSON file exists
-         *
-         * @return bool
-         */
-
         // Checks if JSON file exists, if not create
         if (! file_exists($this->file)) {
             touch($this->file);
@@ -158,15 +158,8 @@ class JSONDB
     /**
      * @return self
      */
-    public function select($args = '*')
+    public function select(string $args = '*')
     {
-        /**
-         * Explodes the selected columns into array
-         *
-         * @param type $args Optional. Default *
-         * @return type object
-         */
-
         // Explode to array
         $this->select = explode(',', $args);
         // Remove whitespaces
@@ -182,13 +175,6 @@ class JSONDB
      */
     public function from(string $file, string $load = 'full')
     {
-        /**
-         * Loads the jSON file
-         *
-         * @param type $file. Accepts file path to jSON file
-         * @return type object
-         */
-
         $this->file = sprintf('%s/%s.json', $this->dir, str_replace('.json', '', $file)); // Adding .json extension is no longer necessary
 
         // Reset where
@@ -206,6 +192,7 @@ class JSONDB
     }
 
     /**
+     * @param array<string, mixed> $columns
      * @return self
      */
     public function where(array $columns, string $merge = 'OR')
@@ -240,6 +227,7 @@ class JSONDB
     }
 
     /**
+     * @param array<string, mixed> $columns
      * @return self
      */
     public function update(array $columns)
@@ -252,11 +240,11 @@ class JSONDB
      * Inserts data into json file
      *
      * @param string $file json filename without extension
-     * @param array $values Array of columns as keys and values
+     * @param array<string, mixed> $values Array of columns as keys and values
      *
-     * @return array $last_indexes Array of last index inserted
+     * @return int[]|string[] Array of last index inserted
      */
-    public function insert($file, array $values)
+    public function insert(string $file, array $values): array
     {
         $this->from($file, 'partial');
 
@@ -448,6 +436,8 @@ class JSONDB
     }
 
     /**
+     * @param mixed $a
+     * @param mixed $b
      * @return bool|int
      */
     private function intersect_value_check($a, $b)
@@ -474,9 +464,9 @@ class JSONDB
     /**
      * Validates and fetch out the data for manipulation
      *
-     * @return array $r Array of rows matching WHERE
+     * @return mixed[] Array of rows matching WHERE
      */
-    private function where_result()
+    private function where_result(): array
     {
         $this->flush_indexes();
 
@@ -503,9 +493,9 @@ class JSONDB
     /**
      * Validates and fetch out the data for manipulation for AND
      *
-     * @return array $r Array of fetched WHERE statement
+     * @return mixed[] Array of fetched WHERE statement
      */
-    private function where_and_result()
+    private function where_and_result(): array
     {
         /*
             Validates the where statement values
@@ -604,30 +594,36 @@ class JSONDB
         return false;
     }
 
-    private function _to_mysql_type($type)
+    /**
+     * @param mixed $type
+     */
+    private function _to_mysql_type($type): string
     {
         if ($type == 'bool') {
-            $return = 'BOOLEAN';
+            return 'BOOLEAN';
         } elseif ($type == 'integer') {
-            $return = 'INT';
+            return 'INT';
         } elseif ($type == 'double') {
-            $return = strtoupper($type);
-        } else {
-            $return = 'VARCHAR( 255 )';
+            return strtoupper($type);
         }
-        return $return;
+        return 'VARCHAR( 255 )';
     }
 
     /**
+     * @param string|int $order
      * @return self
      */
-    public function order_by(string $column, string $order = self::ASC)
+    public function order_by(string $column, $order = self::ASC)
     {
         $this->order_by = [$column, $order];
         return $this;
     }
 
-    private function _process_order_by($content)
+    /**
+     * @param mixed[] $content
+     * @return mixed[]
+     */
+    private function _process_order_by(array $content): array
     {
         if ($this->order_by && $content && in_array($this->order_by[0], array_keys((array) $content[0]))) {
             /*
@@ -664,7 +660,10 @@ class JSONDB
         return $content;
     }
 
-    public function get()
+    /**
+     * @return mixed[]
+     */
+    public function get(): array
     {
         if ($this->where != null) {
             $content = $this->where_result();

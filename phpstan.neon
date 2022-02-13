@@ -4,3 +4,7 @@ parameters:
     paths:
         - src
         - helpers
+
+    ignoreErrors:
+        # false positive
+        - '#Function get_json_chunk\(\) never returns void so it can be removed from the return type#'

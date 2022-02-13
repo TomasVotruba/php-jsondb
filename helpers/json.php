@@ -1,9 +1,10 @@
 <?php
 
 /**
+ * @param resource $fp
  * @return false|string|void
  */
-function get_json_chunk( $fp, int $start_depth = -1 ) {
+function get_json_chunk($fp, int $start_depth = -1 ) {
 	$bufsz = 8192;
 	$start = false;
 	$quotes = [false, false];
@@ -11,10 +12,6 @@ function get_json_chunk( $fp, int $start_depth = -1 ) {
 	$total_bytes_read = 0;
 	$end = false;
 	$cur_pos = 0;
-
-        if ( ! $fp ) {
-                return;
-        }
 
 	$cur_pos = ftell( $fp );
         // Get total size of file
