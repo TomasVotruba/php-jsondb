@@ -116,6 +116,9 @@ class JSONDB
         return true;
     }
 
+    /**
+     * @return self
+     */
     public function select($args = '*')
     {
         /**
@@ -135,7 +138,10 @@ class JSONDB
         return $this;
     }
 
-    public function from($file, $load = 'full')
+    /**
+     * @return self
+     */
+    public function from(string $file, string $load = 'full')
     {
         /**
          * Loads the jSON file
@@ -160,7 +166,10 @@ class JSONDB
         return $this;
     }
 
-    public function where(array $columns, $merge = 'OR')
+    /**
+     * @return self
+     */
+    public function where(array $columns, string $merge = 'OR')
     {
         $this->where = $columns;
         $this->merge = $merge;
@@ -473,7 +482,7 @@ class JSONDB
         return $r;
     }
 
-    public function to_xml($from, $to)
+    public function to_xml(string $from, string $to): bool
     {
         $this->from($from);
         if ($this->content) {
@@ -483,7 +492,7 @@ class JSONDB
 				<' . $element . '>
 ';
 
-            foreach ($this->content as $index => $value) {
+            foreach ($this->content as $value) {
                 $xml .= '
 				<DATA>';
                 foreach ($value as $col => $val) {
@@ -561,7 +570,10 @@ class JSONDB
         return $return;
     }
 
-    public function order_by($column, $order = self::ASC)
+    /**
+     * @return self
+     */
+    public function order_by(string $column, string $order = self::ASC)
     {
         $this->order_by = [$column, $order];
         return $this;
