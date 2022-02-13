@@ -254,7 +254,7 @@ class JSONDB
         } else {
             // Unknown load type
             fclose($f);
-            throw new \Exception('Write fail: Unkown load type provided', 'write_error');
+            throw new \Exception('Write fail: Unkown load type provided');
         }
 
         fclose($f);
