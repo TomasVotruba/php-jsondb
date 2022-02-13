@@ -5,30 +5,69 @@ namespace Jajo;
 
 class JSONDB
 {
+    /**
+     * @var string|null
+     */
     public $file;
 
+    /**
+     * @var string|mixed[]
+     */
     public $content = [];
 
+    /**
+     * @var resource|false|null
+     */
     private $fp;
 
+    /**
+     * @var string|null
+     */
     private $load;
 
+    /**
+     * @var mixed[]|null
+     */
     private $where;
 
+    /**
+     * @var string[]|null
+     */
     private $select;
 
+    /**
+     * @var string|null
+     */
     private $merge;
 
+    /**
+     * @var mixed[]|null
+     */
     private $update;
 
+    /**
+     * @var bool
+     */
     private $delete = false;
 
+    /**
+     * @var int[]|string[]
+     */
     private $last_indexes = [];
 
+    /**
+     * @var array{string, string}|string[]
+     */
     private $order_by = [];
 
+    /**
+     * @var string
+     */
     protected $dir;
 
+    /**
+     * @var array<string, int>
+     */
     private $json_opts = [];
 
     public const ASC = 1;
@@ -39,7 +78,7 @@ class JSONDB
 
     public const OR = 'OR';
 
-    public function __construct($dir, $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
+    public function __construct(string $dir, $json_encode_opt = JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT)
     {
         $this->dir = $dir;
         $this->json_opts['encode'] = $json_encode_opt;

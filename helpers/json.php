@@ -1,4 +1,8 @@
 <?php
+
+/**
+ * @return false|string|void
+ */
 function get_json_chunk( $fp, int $start_depth = -1 ) {
 	$bufsz = 8192;
 	$start = false;
@@ -9,7 +13,7 @@ function get_json_chunk( $fp, int $start_depth = -1 ) {
 	$cur_pos = 0;
 
         if ( ! $fp ) {
-                return; 
+                return;
         }
 
 	$cur_pos = ftell( $fp );
@@ -41,7 +45,7 @@ function get_json_chunk( $fp, int $start_depth = -1 ) {
 			} else {
 				$total_bytes_read += $read_count;
 			}
-			
+
 			for ( ; isset( $buffer[ $i ] ); $i++ ) {
 				if ( "'" == $buffer[ $i ] && ! $quotes[1] ) {
 					// If quote is escaped, ignore
@@ -52,7 +56,7 @@ function get_json_chunk( $fp, int $start_depth = -1 ) {
 					$quotes[0] = ! $quotes[0];
 					continue;
 				}
-				
+
 				if ( '"' == $buffer[ $i ] && ! $quotes[0] ) {
 					// If quote is escaped, ignore
 					if ( ! empty( $buffer[ $i - 1 ] ) && '\\' == $buffer[ $i - 1 ] ) {
